@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: bg-flask-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bg-flask-app
+  template:
+    metadata:
+      labels:
+        app: bg-flask-app
+    spec:
+      containers:
+        - image: 'cremerfc/flask-app:${trigger["buildInfo"]["number"]}'
+          name: flask-app
+          ports:
+            - containerPort: 5000

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: flask-app
+  name: flask-app
+  namespace: spin-deploy-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - image: ${trigger['artifacts'][0]['reference']}
+        name: flask-app
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      -  name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app-service
+  namespace: spin-deploy-namespace
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 5000
+  selector:
+    app: flask-app
+  type: LoadBalancer

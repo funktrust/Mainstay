@@ -1,0 +1,27 @@
+node {
+
+    def app
+    def dockerRegistry
+    def dockerCreds
+
+    stage('Pull image') {
+        /* This pulls the image that was approved */
+
+        app = docker.pull("funktrust/mainstay:1")
+    }
+
+  
+   
+    stage('Push image') {
+    /* Now we will push this one as latest*/
+           dockerRegistry =  'https://registry.hub.docker.com'
+           dockerCreds = 'funktrust'
+       
+        docker.withRegistry(dockerRegistry, dockerCreds ) {
+       
+            app.push("latest")
+            
+        }
+    }
+    
+}
