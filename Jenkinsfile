@@ -17,7 +17,7 @@ node {
         /*checkout scm*/
         checkout ([
             $class: 'GitSCM',
-            branches: "[[name: "${params.REVISION}" ]]",
+            branches: [[name: "${params.REVISION}"]],
             userRemoteConfigs: [[
             url: 'https://github.com/funktrust/mainstay.git']]
                    ])
