@@ -7,7 +7,7 @@ node {
     stage('Pull image') {
         /* This pulls the image that was approved */
 
-        app = docker.pull("funktrust/mainstay:1")
+        app = docker.pull("funktrust/mainstay:latest")
     }
 
   
