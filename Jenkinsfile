@@ -7,17 +7,17 @@ node {
     def dockerCreds
     
     parameters {
-        string(name: 'git_commit_hash', defaultValue: 'default', description: 'Git Commit Hash')
+        gitParameter(name: 'REVISION', defaultValue: 'master', type: 'PT_REVISION')
     }
 
 
     stage('Clone repository') {
-        /* Let's make sure we h ave the repository cloned to our workspace */
+        /* Let's make sure we have the repository cloned to our workspace */
 
         /*checkout scm*/
         checkout ([
             $class: 'GitSCM',
-            branches: [[name: "${params.git_commit_hash}" ]],
+            branches: "[[name: "${params.REVISION}" ]]",
             userRemoteConfigs: [[
             url: 'https://github.com/funktrust/mainstay.git']]
                    ])
