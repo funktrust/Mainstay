@@ -210,3 +210,121 @@ pipeline {
     }
   }
 }
+
+
+
+
+
+podTemplate(
+    cloud: 'kubernetes', 
+    label: 'jenkins/cicd-jenkins-agent',
+    containers: [
+        containerTemplate(
+            name: 'docker',
+            image: 'docker:latest',
+            ttyEnabled: true,
+            alwaysPullImage: false,
+        ),
+    ],
+    volumes: [
+        hostPathVolume(
+            mountPath: '/var/run/docker.sock', 
+            hostPath: '/var/run/docker.sock'
+        )
+    ]
+)
+{
+    node('jenkins/cicd-jenkins-agent') {
+        stage('Test') {
+            git url: 'https://github.com/funktrust/mainstay.git'
+            container('docker') {
+                sh 'docker build -t mainstay:latest . --network=host'
+            }
+        }
+    }
+}
+
+
+
+
+
+podTemplate(
+    cloud: 'kubernetes', 
+    label: 'workshop',
+    containers: [
+        containerTemplate(
+            name: 'nodejs', 
+            image:'node:alpine', 
+            ttyEnabled: true, 
+            alwaysPullImage: false
+        ),
+        containerTemplate(
+            name: 'build',
+            image: 'volaka/ibm-cloud-cli:1.2.1',
+            ttyEnabled: true,
+            alwaysPullImage: false,
+            envVars: [
+                secretEnvVar(
+                    key: 'REGISTRY_TOKEN', 
+                    secretName: 'icr-volaka', 
+                    secretKey: 'apikey'
+                )
+            ]
+        ),
+        containerTemplate(
+            name: 'deploy',
+            image: 'volaka/ibm-cloud-cli:1.2.1',
+            ttyEnabled: true,
+            alwaysPullImage: false,
+            envVars: [
+                secretEnvVar(
+                    key: 'IBMCLOUD_TOKEN', 
+                    secretName: 'ic20', 
+                    secretKey: 'apikey'
+                )
+            ]
+        ),
+    ],
+    volumes: [
+        hostPathVolume(
+            mountPath: '/var/run/docker.sock', 
+            hostPath: '/var/run/docker.sock'
+        )
+    ]
+)
+{
+    node('workshop') {
+        stage('Test') {
+            git url: 'https://github.com/volaka/jenkins-nodejs-app.git'
+            container('nodejs') {
+                sh 'npm install'
+                sh 'npm run test'
+            }
+        }
+        stage('Build') {
+            git url: 'https://github.com/volaka/jenkins-nodejs-app.git'
+            container('build') {
+                sh 'ibmcloud login -a cloud.ibm.com -r eu-de --apikey ${REGISTRY_TOKEN}'
+                sh 'ibmcloud cr login'
+                sh 'ibmcloud cr build -t de.icr.io/volaka/jenkins-app:${BUILD_ID} .'
+            }
+        }
+        stage('Deploy') {
+            git url: 'https://github.com/volaka/jenkins-nodejs-app.git'
+            container('deploy') {
+                sh 'ibmcloud login -a cloud.ibm.com -r eu-de --apikey ${IBMCLOUD_TOKEN}'
+                sh 'ibmcloud ks cluster config --cluster volaka-k8s'
+                sh 'sed -i "s~^\\([[:blank:]]*\\)image:.*$~\\1image: de.icr.io/volaka/jenkins-app:${BUILD_ID}~" deployment.yml'
+                sh 'kubectl apply -f deployment.yml -n default'
+                sh 'kubectl get svc -n jenkins'
+            }
+        }
+    }
+}
+
+
+Clone repository
+Build image
+Test image
+Push image
+Create Properties file
