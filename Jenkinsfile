@@ -1,57 +1,34 @@
-pipeline { 
-    environment {
-    registryCredential = 'funktrust-dockerhub'
-  }
-  agent {
-    kubernetes {
-      yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: docker
-    image: docker:19.03
-    command:
-    - cat
-    tty: true
-    privileged: true
-"""
-    }
-  }
-  stages {
-    stage('Clone repository') {
-      steps {
-        container('docker') {
-        /* Let's make sure we have the repository cloned to our workspace */
+pipeline {
 
-        /*checkout scm*/
-        checkout ([
-            $class: 'GitSCM',
-            branches: [[name: "${params.REVISION}"]],
-            userRemoteConfigs: [[
-            url: 'https://github.com/funktrust/mainstay.git']]
-                   ])
-        }
+  agent any
+
+  stages {
+
+    stage('Checkout Source') {
+      steps {
+        git url:'https://github.com/funktrust/mainstay.git', branch:'master'
       }
     }
+    
+      stage("Build image") {
+            steps {
+                script {
+                    myapp = docker.build("funktrust/mainstay:${env.BUILD_ID}")
+                }
+            }
+        }
+    
+      stage("Push image") {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
+                    }
+                }
+            }
+        }
 
-    stage('Build image') {
-        steps {
-            container('docker') {
-              sh "docker build -t mainstay:latest ."
-            }
-            
-        }
-    }
-    
-    stage('Test image') {
-        steps {
-            container('docker') {
-              echo "Tests passed, nothing to see here."
-            }
-            
-        }
-    }
-    
   }
+
 }
