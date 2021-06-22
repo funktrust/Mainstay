@@ -2,8 +2,7 @@ FROM python:3.8.2-alpine3.11
 
 MAINTAINER Fernando Cremer "cremerfc@gmail.com"
 
-RUN apk add --update-cache \
-    stress-ng
+RUN apk add --update-cache
 
 COPY ./Requirements.txt /Requirements.txt
 

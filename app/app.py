@@ -8,25 +8,25 @@ import time
 import random
 
 # method that helps us simulate cpu load
-def get_shell_script_output_using_check_output(cpu, cpuLoad, io, mem, memSize, timeout):
-    stress_ng = "stress-ng"
-    if cpu != None:
-        stress_ng = stress_ng + " --cpu {cpu}"
-    if cpuLoad != None:
-        stress_ng = stress_ng + " --cpu-load {cpuLoad}"
-    if io != None:
-        stress_ng = stress_ng + " --io {io}"
-    if mem != None:
-        stress_ng = stress_ng + " --vm {mem}"
-    if memSize != None:
-        stress_ng = stress_ng + " --vm-bytes {memSize}"
-    if timeout != None:
-        stress_ng = stress_ng + " --timeout {timeout}"
-    stress_ng = stress_ng + " --metrics-brief"
-
-    stdout = check_output(
-        stress_ng.format(cpu=cpu, cpuLoad=cpuLoad, io=io, mem=mem, memSize=memSize, timeout=timeout), stderr=subprocess.STDOUT, shell=True).decode('utf-8')
-    return stdout
+#def get_shell_script_output_using_check_output(cpu, cpuLoad, io, mem, memSize, timeout):
+#    stress_ng = "stress-ng"
+#    if cpu != None:
+#        stress_ng = stress_ng + " --cpu {cpu}"
+#    if cpuLoad != None:
+#        stress_ng = stress_ng + " --cpu-load {cpuLoad}"
+#    if io != None:
+#        stress_ng = stress_ng + " --io {io}"
+#    if mem != None:
+#        stress_ng = stress_ng + " --vm {mem}"
+#    if memSize != None:
+#        stress_ng = stress_ng + " --vm-bytes {memSize}"
+#    if timeout != None:
+#        stress_ng = stress_ng + " --timeout {timeout}"
+#    stress_ng = stress_ng + " --metrics-brief"
+#
+#    stdout = check_output(
+#        stress_ng.format(cpu=cpu, cpuLoad=cpuLoad, io=io, mem=mem, memSize=memSize, timeout=timeout), stderr=subprocess.STDOUT, shell=True).decode('utf-8')
+#    return stdout
 
 
 app = Flask(__name__)
