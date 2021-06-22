@@ -20,7 +20,9 @@ podTemplate(
     node('jenkins/cicd-jenkins-agent') {
         stage('Clone repository') {
             git url: 'https://github.com/funktrust/mainstay.git'
-            container('docker')
+            container('docker') {
+                echo 'Cloned repository successfully.'
+            }
         }
     }
 
