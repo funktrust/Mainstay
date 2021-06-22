@@ -11,16 +11,16 @@ pipeline {
           labels:
             some-label: some-label-value
         spec:
-            containers:
-            - name: docker
-                image: docker:latest
-                command:
-                - cat
-                tty: true
-            volumes:
-            - hostPathVolume:
-                mountPath: '/var/run/docker.sock'
-                hostPath: '/var/run/docker.sock'
+          containers:
+          - name: docker
+            image: docker:latest
+            command:
+            - cat
+            tty: true
+          volumes:
+          - hostPathVolume:
+            mountPath: '/var/run/docker.sock'
+            hostPath: '/var/run/docker.sock'
         '''
     }
   }
