@@ -1,6 +1,4 @@
 pipeline {  
-  parameters {
-        gitParameter(name: 'REVISION', defaultValue: 'master', type: 'PT_REVISION')
   agent {
     kubernetes {
       yaml """
@@ -17,7 +15,6 @@ spec:
 """
     }
   }
-}
   stages {
     stage('Clone repository') {
       steps {
