@@ -1,6 +1,6 @@
 podTemplate(
     cloud: 'kubernetes', 
-    label: 'jenkins-slave',
+    label: 'jenkins/cicd-jenkins-agent',
     containers: [
         containerTemplate(
             name: 'docker',
@@ -17,7 +17,7 @@ podTemplate(
     ]
 )
 {
-    node('jenkins-slave') {
+    node('jenkins/cicd-jenkins-agent') {
         stage('Test') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
