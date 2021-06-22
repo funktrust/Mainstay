@@ -1,4 +1,9 @@
-pipeline {  
+pipeline { 
+    environment {
+    imagename = "funktrust/mainstay"
+    registryCredential = 'funktrust-dockerhub'
+    dockerImage = ''
+  }
   agent {
     kubernetes {
       yaml """
@@ -35,10 +40,31 @@ spec:
     stage('Build image') {
         steps {
             container('docker') {
-              app = docker.build("funktrust/mainstay")
+              dockerImage = docker.build ("funktrust/mainstay")
             }
             
         }
+    }
+    
+    stage('Test image') {
+        /* Ideally, we would run a test framework against our image.
+         * For this example, we're using a Volkswagen-type approach ;-) */
+
+        
+            echo "Tests passed, nothing to see here."
+        
+    }
+
+    stage('Push Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push("$BUILD_NUMBER")
+             dockerImage.push('latest')
+
+          }
+        }
+      }
     }
     
   }
