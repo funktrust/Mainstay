@@ -21,7 +21,7 @@ podTemplate(
         stage('Test') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
-                sh 'docker build -t mainstay:latest .'
+                sh 'docker build -t mainstay:latest . --network=host'
             }
         }
     }
