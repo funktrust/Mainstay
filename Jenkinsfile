@@ -14,7 +14,7 @@ podTemplate(
             hostPath: '/var/run/docker.sock'
         )
     ]
-
+)
 {
     node('workshop') {
         stage('Test') {
@@ -25,4 +25,3 @@ podTemplate(
         }
     }
 }
-)
