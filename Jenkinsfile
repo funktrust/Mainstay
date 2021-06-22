@@ -1,34 +1,37 @@
 pipeline {
-
-  agent any
-
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            some-label: some-label-value
+        spec:
+          containers:
+          - name: maven
+            image: maven:alpine
+            command:
+            - cat
+            tty: true
+          - name: busybox
+            image: busybox
+            command:
+            - cat
+            tty: true
+        '''
+    }
+  }
   stages {
-
-    stage('Checkout Source') {
+    stage('Run maven') {
       steps {
-        git url:'https://github.com/funktrust/mainstay.git', branch:'master'
+        container('maven') {
+          sh 'mvn -version'
+        }
+        container('busybox') {
+          sh '/bin/busybox'
+        }
       }
     }
-    
-      stage("Build image") {
-            steps {
-                script {
-                    myapp = docker.build("funktrust/mainstay:${env.BUILD_ID}")
-                }
-            }
-        }
-    
-      stage("Push image") {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                            myapp.push("latest")
-                            myapp.push("${env.BUILD_ID}")
-                    }
-                }
-            }
-        }
-
   }
-
 }
