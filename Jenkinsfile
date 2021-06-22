@@ -1,4 +1,7 @@
 pipeline {
+    environment {
+    registryCredential = 'funktrust-dockerhub'
+  }
   agent {
     kubernetes {
       yaml '''
@@ -23,13 +26,16 @@ pipeline {
     }
   }
   stages {
+    stage('Clone repository') {
+      steps {
+        git url:'https://github.com/funktrust/mainstay.git', branch:'master'
+      }
+    }
+
     stage('Run docker') {
       steps {
         container('docker') {
-          sh 'docker --version'
-        }
-        container('busybox') {
-          sh '/bin/busybox'
+          sh 'docker build -t mainstay:latest .'
         }
       }
     }
