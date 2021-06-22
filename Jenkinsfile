@@ -1,8 +1,6 @@
 pipeline { 
     environment {
-    imagename = "funktrust/mainstay"
     registryCredential = 'funktrust-dockerhub'
-    dockerImage = ''
   }
   agent {
     kubernetes {
@@ -40,7 +38,7 @@ spec:
     stage('Build image') {
         steps {
             container('docker') {
-              dockerImage = docker.build ("funktrust/mainstay")
+              sh "docker build -t mainstay:latest ."
             }
             
         }
@@ -53,18 +51,6 @@ spec:
         
             echo "Tests passed, nothing to see here."
         
-    }
-
-    stage('Push Image') {
-      steps{
-        script {
-          docker.withRegistry( '', registryCredential ) {
-            dockerImage.push("$BUILD_NUMBER")
-             dockerImage.push('latest')
-
-          }
-        }
-      }
     }
     
   }
