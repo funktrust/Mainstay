@@ -1,10 +1,10 @@
 podTemplate(
     cloud: 'kubernetes', 
-    label: 'workshop',
+    label: 'jenkins-slave',
     containers: [
         containerTemplate(
-            name: 'maven',
-            image: 'maven:alpine',
+            name: 'docker',
+            image: 'docker:latest',
             ttyEnabled: true,
             alwaysPullImage: false,
         ),
@@ -17,10 +17,10 @@ podTemplate(
     ]
 )
 {
-    node('workshop') {
+    node('jenkins-slave') {
         stage('Test') {
             git url: 'https://github.com/funktrust/mainstay.git'
-            container('maven') {
+            container('docker') {
                 sh 'docker --version'
             }
         }
