@@ -1,7 +1,18 @@
- # syntax=docker/dockerfile:1
- FROM node:12-alpine
- RUN apk add --no-cache python g++ make
- WORKDIR /app
- COPY . .
- RUN yarn install --production
- CMD ["node", "src/index.js"]
+FROM python:3.8.2-alpine3.11
+
+MAINTAINER Fernando Cremer "cremerfc@gmail.com"
+
+RUN apk add --update-cache \
+    stress-ng
+
+COPY ./Requirements.txt /Requirements.txt
+
+WORKDIR /
+
+RUN pip3 install -r Requirements.txt
+
+COPY . /
+
+ENTRYPOINT [ "python3" ]
+
+CMD [ "app/app.py" ]
