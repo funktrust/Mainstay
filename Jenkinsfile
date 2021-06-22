@@ -45,12 +45,12 @@ spec:
     }
     
     stage('Test image') {
-        /* Ideally, we would run a test framework against our image.
-         * For this example, we're using a Volkswagen-type approach ;-) */
-
-        
-            echo "Tests passed, nothing to see here."
-        
+        steps {
+            container('docker') {
+              echo "Tests passed, nothing to see here."
+            }
+            
+        }
     }
     
   }
