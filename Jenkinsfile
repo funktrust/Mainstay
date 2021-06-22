@@ -9,8 +9,8 @@ pipeline {
             some-label: some-label-value
         spec:
           containers:
-          - name: maven
-            image: maven:alpine
+          - name: docker
+            image: docker:latest
             command:
             - cat
             tty: true
@@ -23,10 +23,10 @@ pipeline {
     }
   }
   stages {
-    stage('Run maven') {
+    stage('Run docker') {
       steps {
-        container('maven') {
-          sh 'mvn -version'
+        container('docker') {
+          sh 'docker --version'
         }
         container('busybox') {
           sh '/bin/busybox'
