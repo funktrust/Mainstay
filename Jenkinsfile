@@ -15,11 +15,9 @@ spec:
     - cat
     tty: true
     privileged: true
-    volumes:
-    - type: HostPath
-     volumeName: docker-sock
-     hostPath: /var/run/docker.sock
-     mountPath: /var/run/docker.sock
+    volumeMounts:
+        - name: dockersock
+        mountPath: /var/run/docker.sock
 """
     }
   }
