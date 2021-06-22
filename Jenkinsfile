@@ -3,11 +3,12 @@ podTemplate(
     label: 'workshop',
     containers: [
         containerTemplate(
-            name: 'maven', 
-            image:'maven:alpine', 
-            ttyEnabled: true, 
-            alwaysPullImage: false
+            name: 'maven',
+            image: 'maven:alpine',
+            ttyEnabled: true,
+            alwaysPullImage: false,
         ),
+    ],
     volumes: [
         hostPathVolume(
             mountPath: '/var/run/docker.sock', 
