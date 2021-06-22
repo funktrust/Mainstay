@@ -31,6 +31,15 @@ spec:
         }
       }
     }
+
+    stage('Build image') {
+        steps {
+            container('docker') {
+              app = docker.build("funktrust/mainstay")
+            }
+            
+        }
+    }
     
   }
 }
