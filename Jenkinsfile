@@ -34,7 +34,6 @@ podTemplate(
 
     node('jenkins/cicd-jenkins-agent') {
         stage('Test image') {
-            git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
                 echo 'Tests passed, nothing to see here.'
             }
