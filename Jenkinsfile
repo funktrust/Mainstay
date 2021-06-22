@@ -20,12 +20,12 @@ podTemplate(
     node('jenkins/cicd-jenkins-agent') {
         stage('Clone repository') {
             git url: 'https://github.com/funktrust/mainstay.git'
+            container('docker')
         }
     }
 
     node('jenkins/cicd-jenkins-agent') {
         stage('Build image') {
-            git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
                 sh 'docker build -t mainstay:latest . --network=host'
             }
