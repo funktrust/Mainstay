@@ -27,6 +27,7 @@ pipeline {
         """.stripIndent()
         }
     }
+}
 
 node('jenkins/cicd-jenkins-agent') {
     stages {
@@ -67,4 +68,3 @@ node('jenkins/cicd-jenkins-agent') {
             }
         }
     }
-}
