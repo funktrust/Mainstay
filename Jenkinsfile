@@ -7,7 +7,7 @@ podTemplate(
             image: 'docker:latest',
             ttyEnabled: true,
             alwaysPullImage: false,
-            imagePullSecrets: 'dockerhub',
+            imagePullSecrets: '["dockerhub"]',
         ),
     ],
     volumes: [
