@@ -7,10 +7,6 @@ pipeline {
         metadata:
             name: 'jenkins/cicd-jenkins-agent'
             namespace: 'jenkins'
-        volumes:
-            hostPathVolume:
-            - mountPath: '/var/run/docker.sock'
-            - hostPath: '/var/run/docker.sock'
         spec:
             containers:
             - name: docker
@@ -18,6 +14,10 @@ pipeline {
               imagePullSecrets:
                   - name: dockerhub
               tty: true
+              volumes:
+                hostPathVolume:
+                - mountPath: '/var/run/docker.sock'
+                - hostPath: '/var/run/docker.sock'
 
         """.stripIndent()
         }
