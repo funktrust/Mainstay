@@ -24,18 +24,14 @@ podTemplate(
                 echo 'Cloned repository successfully.'
             }
         }
-    }
 
-    node('jenkins/cicd-jenkins-agent') {
         stage('Build image') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
-                sh 'docker build -t mainstay:latest . --network=host'
+                sh 'docker build -t mainstay:${BUILD_ID} . --network=host'
             }
         }
-    }
 
-    node('jenkins/cicd-jenkins-agent') {
         stage('Test image') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
