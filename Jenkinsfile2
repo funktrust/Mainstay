@@ -323,8 +323,119 @@ podTemplate(
 }
 
 
+    stage('Create Docker images') {
+      container('docker') {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding',
+          credentialsId: 'dockerhub',
+          usernameVariable: 'DOCKER_HUB_USER',
+          passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+          sh """
+            docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}
+            docker build -t namespace/my-image:${gitCommit} .
+            docker push namespace/my-image:${gitCommit}
+            """
+        }
+      }
+    }
+
+
+pipeline {
+    agent {
+        kubernetes {
+            yaml """\
+        apiVersion: v1
+        kind: Pod
+        metadata:
+            name: 'jenkins-slave'
+            namespace: 'your-namespace'
+        spec:
+            containers:
+            - name: jnlp
+              image: jenkins/inbound-agent:4.3-9-alpine
+              tty: true
+            - name: demo-application
+              image: some-image
+              imagePullSecrets:
+                  - name: your-secret
+              tty: true
+
+        """.stripIndent()
+        }
+    }
+    stages {
+        stage('run app') {
+            steps {
+                container('demo-application') {
+                    echo POD_CONTAINER
+                }
+            }
+        }
+    }
+}
+
+
+
 Clone repository
 Build image
 Test image
 Push image
 Create Properties file
+
+
+
+
+
+
+
+podTemplate(
+    cloud: 'kubernetes', 
+    label: 'jenkins/cicd-jenkins-agent',
+    containers: [
+        containerTemplate(
+            name: 'docker',
+            image: 'docker:latest',
+            ttyEnabled: true,
+            alwaysPullImage: false,
+            imagePullSecrets: '["dockerhub"]',
+        ),
+    ],
+    volumes: [
+        hostPathVolume(
+            mountPath: '/var/run/docker.sock', 
+            hostPath: '/var/run/docker.sock'
+        )
+    ]
+)
+{
+    node('jenkins/cicd-jenkins-agent') {
+        stage('Clone repository') {
+            git url: 'https://github.com/funktrust/mainstay.git'
+            container('docker') {
+                echo 'Cloned repository successfully.'
+            }
+        }
+
+        stage('Build image') {
+            git url: 'https://github.com/funktrust/mainstay.git'
+            container('docker') {
+                sh 'docker build -t mainstay:${BUILD_ID} . --network=host'
+                sh 'docker tag mainstay:${BUILD_ID} funktrust/mainstay:${BUILD_ID}'
+            }
+        }
+
+        stage('Test image') {
+            git url: 'https://github.com/funktrust/mainstay.git'
+            container('docker') {
+                echo 'Tests passed, nothing to see here.'
+            }
+        }
+
+        stage('Push image') {
+            git url: 'https://github.com/funktrust/mainstay.git'
+            container('docker') {
+                sh 'docker push funktrust/mainstay:${BUILD_ID}'
+            }
+        }
+    }
+
+}

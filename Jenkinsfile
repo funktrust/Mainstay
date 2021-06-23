@@ -1,23 +1,27 @@
-podTemplate(
-    cloud: 'kubernetes', 
-    label: 'jenkins/cicd-jenkins-agent',
-    containers: [
-        containerTemplate(
-            name: 'docker',
-            image: 'docker:latest',
-            ttyEnabled: true,
-            alwaysPullImage: false,
-            imagePullSecrets: '["dockerhub"]',
-        ),
-    ],
-    volumes: [
-        hostPathVolume(
-            mountPath: '/var/run/docker.sock', 
-            hostPath: '/var/run/docker.sock'
-        )
-    ]
-)
-{
+pipeline {
+    agent {
+        kubernetes {
+            yaml """\
+        apiVersion: v1
+        kind: Pod
+        metadata:
+            name: 'jenkins/cicd-jenkins-agent'
+            namespace: 'jenkins'
+        volumes:
+            hostPathVolume:
+            - mountPath: '/var/run/docker.sock'
+            - hostPath: '/var/run/docker.sock'
+        spec:
+            containers:
+            - name: docker
+              image: docker:latest
+              imagePullSecrets
+                  - name: dockerhub
+              tty: true
+
+        """.stripIndent()
+        }
+    }
     node('jenkins/cicd-jenkins-agent') {
         stage('Clone repository') {
             git url: 'https://github.com/funktrust/mainstay.git'
@@ -48,5 +52,4 @@ podTemplate(
             }
         }
     }
-
 }
