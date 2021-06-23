@@ -28,8 +28,8 @@ podTemplate(
         stage('Build image') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
-                sh 'docker build -t funktrust/mainstay:${BUILD_ID} . --network=host'
-                sh 'docker tag funktrust/mainstay:${BUILD_ID}'
+                sh 'docker build -t mainstay:${BUILD_ID} . --network=host'
+                sh 'docker tag mainstay:${BUILD_ID} funktrust/mainstay:${BUILD_ID}'
             }
         }
 
