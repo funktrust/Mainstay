@@ -14,10 +14,13 @@ pipeline {
               imagePullSecrets:
                   - name: dockerhub
               tty: true
+              volumeMounts:
+              - name: dockersock
+              mountPath: /var/run/docker.sock
             volumes:
-            - hostPathVolume:
-                mountPath: '/var/run/docker.sock'
-                hostPath: '/var/run/docker.sock'
+            - name: dockersock
+                hostPath:
+                    path: /var/run/docker.sock
 
         """.stripIndent()
         }
