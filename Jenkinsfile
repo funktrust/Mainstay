@@ -43,7 +43,13 @@ podTemplate(
         stage('Push image') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
-                sh 'docker push funktrust/mainstay:${BUILD_ID}'
+                withCredentials([[$class: 'UsernamePasswordMultiBinding',
+                    credentialsId: 'funktrust-dockerhub',
+                    usernameVariable: 'DOCKER_HUB_USER',
+                    passwordVariable: 'DOCKER_HUB_PASSWORD']]) {
+                    sh 'docker login -u ${DOCKER_HUB_USER} -p ${DOCKER_HUB_PASSWORD}'
+                    sh 'docker push funktrust/mainstay:${BUILD_ID}'
+                }
             }
         }
     }
