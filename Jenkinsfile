@@ -1,13 +1,13 @@
 podTemplate(
     cloud: 'kubernetes', 
     label: 'jenkins/cicd-jenkins-agent',
-    imagePullSecrets: 'dockerhub',
     containers: [
         containerTemplate(
             name: 'docker',
             image: 'docker:latest',
             ttyEnabled: true,
             alwaysPullImage: false,
+            imagePullSecrets: 'dockerhub',
         ),
     ],
     volumes: [
