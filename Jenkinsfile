@@ -29,6 +29,7 @@ podTemplate(
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
                 sh 'docker build -t funktrust/mainstay:${BUILD_ID} . --network=host'
+                sh 'docker tag '
             }
         }
 
@@ -42,7 +43,6 @@ podTemplate(
         stage('Push image') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
-                sh 'docker build -t funktrust/mainstay:${BUILD_ID} . --network=host'
                 sh 'docker push funktrust/namestay:${BUILD_ID}'
             }
         }
