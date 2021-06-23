@@ -2,7 +2,7 @@ pipeline {
     agent {
         kubernetes {
             // cloud 'kubernetes'
-            label 'jenkins/cicd-jenkins-agent'
+            inheritFrom 'jenkins/cicd-jenkins-agent'
             yaml """\
         apiVersion: v1
         kind: Pod
