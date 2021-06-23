@@ -61,4 +61,5 @@ podTemplate(
             archiveArtifacts artifacts: 'image.properties'
             }
         }
+    }
 }
