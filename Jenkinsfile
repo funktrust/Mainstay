@@ -56,10 +56,9 @@ podTemplate(
         stage('Create Properties file') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
-                sh "docker inspect --format=\'{{index .RepoDigests 0}}\' registry.hub.docker.com/funktrust/mainstay:${BUILD_ID}>image.properties"
+                sh 'docker inspect --format=\'{{index .RepoDigests 0}}\' registry.hub.docker.com/funktrust/mainstay:${BUILD_ID}>image.properties'
         
             archiveArtifacts artifacts: 'image.properties'
             }
         }
-
 }
