@@ -28,7 +28,7 @@ pipeline {
         }
     }
 
-    stages {
+    node('jenkins/cicd-jenkins-agent') {
         stage('Clone repository') {
                 steps {
                     git url: 'https://github.com/funktrust/mainstay.git'
