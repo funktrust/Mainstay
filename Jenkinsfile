@@ -15,7 +15,7 @@ pipeline {
             containers:
             - name: docker
               image: docker:latest
-              imagePullSecrets
+              imagePullSecrets:
                   - name: dockerhub
               tty: true
 
