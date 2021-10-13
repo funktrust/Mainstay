@@ -35,7 +35,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
 
-    return "Jenkins with Spinnaker with Github is awesome!"
+    return "api-tier2-mainstay-v1"
 
 
 @app.route('/test')
