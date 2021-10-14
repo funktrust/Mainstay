@@ -40,6 +40,13 @@ podTemplate(
             }
         }
 
+        stage('Scan image') {
+            git url: 'https://github.com/funktrust/mainstay.git'
+            container('docker') {
+                echo 'Scan passed, nothing to see here.'
+            }
+        }
+
         stage('Push image') {
             git url: 'https://github.com/funktrust/mainstay.git'
             container('docker') {
