@@ -35,7 +35,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
 
-    return "api-tier2-mainstay-v3"
+    return "api-tier2-mainstay-v2"
 
 
 @app.route('/test')
